@@ -569,7 +569,7 @@ func clearBG() {
     bgImage = ebiten.NewImageFromImage(bgimage)
 }
 
-func main() {
+func init() {
     bgimage, _, err := image.Decode(bytes.NewReader(platformer.Background_png))
     if err != nil {
         log.Fatal(err)
@@ -611,7 +611,9 @@ func main() {
         log.Fatal(err)
     }
     startImage = ebiten.NewImageFromImage(startimage)
+}
 
+func main() {
     ebiten.SetWindowSize(1024, 768)
     ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
     ebiten.SetWindowTitle("Card Memory Game")
