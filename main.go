@@ -11,7 +11,7 @@ import (
     "os"
     "time"
 
-    "ebitengine-poc/assets"
+    "cardmemorygame/assets"
 
     "golang.org/x/image/font/gofont/goregular"
 
@@ -24,6 +24,7 @@ import (
 )
 
 var (
+    cardImage *ebiten.Image
     quitImage *ebiten.Image
     bgimage image.Image
     startImage *ebiten.Image
@@ -76,7 +77,7 @@ func (g *Game) Restart() {
     rand.Seed(time.Now().UnixNano())
     for a := 0; a < g.GetN(); a++ {
         for b := 0; b <= g.GetN() / 2; b++ {
-            cards[[2]int{a, b}] = frontImage
+            cards[[2]int{a, b}] = cardImage
             if rand.Intn(2) == 1 {
                 cardz[[2]int{a, b}] = rightImage
             } else {
@@ -86,7 +87,7 @@ func (g *Game) Restart() {
     }
     for c := 0; c < g.GetN(); c++ {
         for d := g.GetN() / 2; d < g.GetN(); d++ {
-            cards[[2]int{c, d}] = frontImage
+            cards[[2]int{c, d}] = cardImage
             if cardz[[2]int{c, d - (g.GetN() / 2)}] == leftImage {
                 cardz[[2]int{c, d}] = rightImage
             } else {
@@ -110,7 +111,7 @@ func (g *Game) Update() error {
     if won {
         if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
             x, y := ebiten.CursorPosition()
-            if x >= w / 8 && x <= (w / 8) + 344 && y >= int(float64(h) / 1.5) && y <= int(float64(h) / 1.5) + 84 {
+            if x >= w / 9 && x <= (w / 9) + 174 && y >= int(float64(h) / 1.375) && y <= int(float64(h) / 1.375) + 44 {
                 g.Restart()
                 initial = true
             }
@@ -130,213 +131,213 @@ func (g *Game) Update() error {
             switch g.GetN() {
                 case 2:
                     switch {
-                        case x >= (w / 2) - 10 - (bw / 2) && x <= (w / 2) - 10:
+                        case x >= (w / 2) - 10 - (bw / 4) && x <= (w / 2) - 10:
                             switch {
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{0, 0}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{1, 0}
                             }
-                        case x >= (w / 2) + 10 && x <= (w / 2) + 10 + (bw / 2):
+                        case x >= (w / 2) + 10 && x <= (w / 2) + 10 + (bw / 4):
                             switch {
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{0, 1}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{1, 1}
                             }
                     }
                 case 4:
                     switch {
-                        case x >= (w / 2) - 30 - bw && x <= (w / 2) - 30 - (bw / 2):
+                        case x >= (w / 2) - 30 - (bw / 2) && x <= (w / 2) - 30 - (bw / 4):
                             switch {
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{0, 0}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{1, 0}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{2, 0}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{3, 0}
                             }
-                        case x >= (w / 2) - 10 - (bw / 2) && x <= (w / 2) - 10:
+                        case x >= (w / 2) - 10 - (bw / 4) && x <= (w / 2) - 10:
                             switch {
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{0, 1}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{1, 1}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{2, 1}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{3, 1}
                             }
-                        case x >= (w / 2) + 10 && x <= (w / 2) + 10 + (bw / 2):
+                        case x >= (w / 2) + 10 && x <= (w / 2) + 10 + (bw / 4):
                             switch {
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{0, 2}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{1, 2}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{2, 2}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{3, 2}
                             }
-                        case x >= (w / 2) + 30 + (bw / 2) && x <= (w / 2) + 30 + bw:
+                        case x >= (w / 2) + 30 + (bw / 4) && x <= (w / 2) + 30 + (bw / 2):
                             switch {
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{0, 3}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{1, 3}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{2, 3}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{3, 3}
                             }
                     }
                 case 6:
                     switch {
-                        case x >= (w / 2) - 50 - ((3 * bw) / 2) && x <= (w / 2) - 50 - bw:
+                        case x >= (w / 2) - 50 - ((3 * bw) / 4) && x <= (w / 2) - 50 - (bw / 2):
                             switch {
-                                case y >= (h / 2) - 50 - ((3 * bh) / 2) && y <= (h / 2) - 50 - bh:
+                                case y >= (h / 2) - 50 - ((3 * bh) / 4) && y <= (h / 2) - 50 - (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{0, 0}
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{1, 0}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{2, 0}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{3, 0}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{4, 0}
-                                case y >= (h / 2) + 50 + bh && y <= (h / 2) + 50 + ((3 * bh) / 2):
+                                case y >= (h / 2) + 50 + (bh / 2) && y <= (h / 2) + 50 + ((3 * bh) / 4):
                                     clicked = true
                                     cardclicked = [2]int{5, 0}
                             }
-                        case x >= (w / 2) - 30 - bw && x <= (w / 2) - 30 - (bw / 2):
+                        case x >= (w / 2) - 30 - (bw / 2) && x <= (w / 2) - 30 - (bw / 4):
                             switch {
-                                case y >= (h / 2) - 50 - ((3 * bh) / 2) && y <= (h / 2) - 50 - bh:
+                                case y >= (h / 2) - 50 - ((3 * bh) / 4) && y <= (h / 2) - 50 - (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{0, 1}
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{1, 1}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{2, 1}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{3, 1}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{4, 1}
-                                case y >= (h / 2) + 50 + bh && y <= (h / 2) + 50 + ((3 * bh) / 2):
+                                case y >= (h / 2) + 50 + (bh / 2) && y <= (h / 2) + 50 + ((3 * bh) / 4):
                                     clicked = true
                                     cardclicked = [2]int{5, 1}
                             }
-                        case x >= (w / 2) - 10 - (bw / 2) && x <= (w / 2) - 10:
+                        case x >= (w / 2) - 10 - (bw / 4) && x <= (w / 2) - 10:
                             switch {
-                                case y >= (h / 2) - 50 - ((3 * bh) / 2) && y <= (h / 2) - 50 - bh:
+                                case y >= (h / 2) - 50 - ((3 * bh) / 4) && y <= (h / 2) - 50 - (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{0, 2}
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{1, 2}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{2, 2}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{3, 2}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{4, 2}
-                                case y >= (h / 2) + 50 + bh && y <= (h / 2) + 50 + ((3 * bh) / 2):
+                                case y >= (h / 2) + 50 + (bh / 2) && y <= (h / 2) + 50 + ((3 * bh) / 4):
                                     clicked = true
                                     cardclicked = [2]int{5, 2}
                             }
-                        case x >= (w / 2) + 10 && x <= (w / 2) + 10 + (bw / 2):
+                        case x >= (w / 2) + 10 && x <= (w / 2) + 10 + (bw / 4):
                             switch {
-                                case y >= (h / 2) - 50 - ((3 * bh) / 2) && y <= (h / 2) - 50 - bh:
+                                case y >= (h / 2) - 50 - ((3 * bh) / 4) && y <= (h / 2) - 50 - (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{0, 3}
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{1, 3}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{2, 3}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{3, 3}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{4, 3}
-                                case y >= (h / 2) + 50 + bh && y <= (h / 2) + 50 + ((3 * bh) / 2):
+                                case y >= (h / 2) + 50 + (bh / 2) && y <= (h / 2) + 50 + ((3 * bh) / 4):
                                     clicked = true
                                     cardclicked = [2]int{5, 3}
                             }
-                        case x >= (w / 2) + 30 + (bw / 2) && x <= (w / 2) + 30 + bw:
+                        case x >= (w / 2) + 30 + (bw / 4) && x <= (w / 2) + 30 + (bw / 2):
                             switch {
-                                case y >= (h / 2) - 50 - ((3 * bh) / 2) && y <= (h / 2) - 50 - bh:
+                                case y >= (h / 2) - 50 - ((3 * bh) / 4) && y <= (h / 2) - 50 - (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{0, 4}
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{1, 4}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{2, 4}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{3, 4}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{4, 4}
-                                case y >= (h / 2) + 50 + bh && y <= (h / 2) + 50 + ((3 * bh) / 2):
+                                case y >= (h / 2) + 50 + (bh / 2) && y <= (h / 2) + 50 + ((3 * bh) / 4):
                                     clicked = true
                                     cardclicked = [2]int{5, 4}
                             }
-                        case x >= (w / 2) + 50 + bw && x <= (w / 2) + 50 + ((3 * bw) / 2):
+                        case x >= (w / 2) + 50 + (bw / 2) && x <= (w / 2) + 50 + ((3 * bw) / 4):
                             switch {
-                                case y >= (h / 2) - 50 - ((3 * bh) / 2) && y <= (h / 2) - 50 - bh:
+                                case y >= (h / 2) - 50 - ((3 * bh) / 4) && y <= (h / 2) - 50 - (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{0, 5}
-                                case y >= (h / 2) - 30 - bh && y <= (h / 2) - 30 - (bh / 2):
+                                case y >= (h / 2) - 30 - (bh / 2) && y <= (h / 2) - 30 - (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{1, 5}
-                                case y >= (h / 2) - 10 - (bh / 2) && y <= (h / 2) - 10:
+                                case y >= (h / 2) - 10 - (bh / 4) && y <= (h / 2) - 10:
                                     clicked = true
                                     cardclicked = [2]int{2, 5}
-                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 2):
+                                case y >= (h / 2) + 10 && y <= (h / 2) + 10 + (bh / 4):
                                     clicked = true
                                     cardclicked = [2]int{3, 5}
-                                case y >= (h / 2) + 30 + (bh / 2) && y <= (h / 2) + 30 + bh:
+                                case y >= (h / 2) + 30 + (bh / 4) && y <= (h / 2) + 30 + (bh / 2):
                                     clicked = true
                                     cardclicked = [2]int{4, 5}
-                                case y >= (h / 2) + 50 + bh && y <= (h / 2) + 50 + ((3 * bh) / 2):
+                                case y >= (h / 2) + 50 + (bh / 2) && y <= (h / 2) + 50 + ((3 * bh) / 4):
                                     clicked = true
                                     cardclicked = [2]int{5, 5}
                             }
@@ -366,7 +367,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
             rand.Seed(time.Now().UnixNano())
             for a := 0; a < newn; a++ {
                 for b := 0; b <= newn / 2; b++ {
-                    cards[[2]int{a, b}] = frontImage
+                    cards[[2]int{a, b}] = cardImage
                     if rand.Intn(2) == 1 {
                         cardz[[2]int{a, b}] = rightImage
                     } else {
@@ -376,7 +377,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
             }
             for c := 0; c < newn; c++ {
                 for d := newn / 2; d < newn; d++ {
-                    cards[[2]int{c, d}] = frontImage
+                    cards[[2]int{c, d}] = cardImage
                     if cardz[[2]int{c, d - (newn / 2)}] == leftImage {
                         cardz[[2]int{c, d}] = rightImage
                     } else {
@@ -420,24 +421,36 @@ func (g *Game) Draw(screen *ebiten.Image) {
                 GeoM: qgm})
         bw, bh := frontImage.Size()
         gm := ebiten.GeoM{}
-        gm.Scale(0.5, 0.5)
+        gm.Scale(0.25, 0.25)
         switch g.GetN() {
             case 2:
-                gm.Translate(float64((w / 2) - 10 - (bw / 2)), float64((h / 2) - 10 - (bh / 2)))
+                gm.Translate(float64((w / 2) - 10 - (bw / 4)), float64((h / 2) - 10 - (bh / 4)))
             case 4:
-                gm.Translate(float64((w / 2) - 30 - bw), float64((h / 2) - 30 - bh))
+                gm.Translate(float64((w / 2) - 30 - (bw / 2)), float64((h / 2) - 30 - (bh / 2)))
             case 6:
-                gm.Translate(float64((w / 2) - 50 - ((3 * bw) / 2)), float64((h / 2) - 50 - ((3 * bh) / 2)))
+                gm.Translate(float64((w / 2) - 50 - ((3 * bw) / 4)), float64((h / 2) - 50 - ((3 * bh) / 4)))
         }
         for a := 0; a < g.GetN(); a++ {
             for b := 0; b < g.GetN(); b++ {
+                gm.Translate(-float64(2), -float64(2))
+                ci := ebiten.NewImage(bw + 16, bh + 16)
+                ci.Fill(color.Black)
+                screen.DrawImage(
+                    ci, &ebiten.DrawImageOptions{
+                        GeoM: gm})
+                gm.Translate(float64(2), float64(2))
+                cci := ebiten.NewImage(bw, bh)
+                cci.Fill(color.RGBA{241, 162, 47, 255})
+                screen.DrawImage(
+                    cci, &ebiten.DrawImageOptions{
+                        GeoM: gm})
                 screen.DrawImage(
                     cards[[2]int{a, b}], &ebiten.DrawImageOptions{
                         GeoM: gm})
                 if b < g.GetN() - 1 {
-                    gm.Translate(float64((bw / 2) + 20), float64(0))
+                    gm.Translate(float64((bw / 4) + 20), float64(0))
                 } else if a < g.GetN() - 1 {
-                    gm.Translate(-float64(((bw / 2) + 20) * (g.GetN() - 1)), float64((bh / 2) + 20))
+                    gm.Translate(-float64(((bw / 4) + 20) * (g.GetN() - 1)), float64((bh / 4) + 20))
                 }
             }
         }
@@ -446,8 +459,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
                 time.Sleep(dur)
                 sleept = 1
                 sleep = false
-                cards[cardclicked] = frontImage
-                cards[flippedcard] = frontImage
+                cards[cardclicked] = cardImage
+                cards[flippedcard] = cardImage
             } else {
                 sleept--
             }
@@ -493,7 +506,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
     }
     if won {
         wgm := ebiten.GeoM{}
-        wgm.Translate(float64((w / 2) - 122), float64((h / 2) - 37))
+        wgm.Translate(float64(w) / 2.437, float64(h) / 2.22)
         wwi := ebiten.NewImage(244, 84)
         wwi.Fill(color.Black)
         screen.DrawImage(
@@ -508,19 +521,20 @@ func (g *Game) Draw(screen *ebiten.Image) {
         fo := truetype.NewFace(fon, &truetype.Options{Size: 40})
         text.Draw(screen, "YOU WON", fo, (w / 2) - 100, (h / 2) + 20, color.RGBA{22, 154, 26, 204})
         dgm := ebiten.GeoM{}
-        dgm.Translate(float64(w / 8), float64(h) / 1.5)
-        cdi := ebiten.NewImage(344, 84)
+        dgm.Translate(float64(w / 9), float64(h) / 1.375)
+        cdi := ebiten.NewImage(174, 44)
         cdi.Fill(color.Black)
         screen.DrawImage(
             cdi, &ebiten.DrawImageOptions{
                 GeoM: dgm})
         dgm.Translate(float64(2), float64(2))
-        di := ebiten.NewImage(340, 80)
+        di := ebiten.NewImage(170, 40)
         di.Fill(color.RGBA{241, 162, 47, 255})
         screen.DrawImage(
             di, &ebiten.DrawImageOptions{
                 GeoM: dgm})
-        text.Draw(screen, "Change Difficulty", fo, (w / 8) + 20, int(float64(h) / 1.5) + 60, color.Black)
+        fo2 := truetype.NewFace(fon, &truetype.Options{Size: 20})
+        text.Draw(screen, "Change Difficulty", fo2, (w / 9) + 10, int(float64(h) / 1.375) + 30, color.Black)
         //bos := text.BoundString(fo, "Change Difficulty")
     }
 }
@@ -552,6 +566,12 @@ func main() {
         log.Fatal(err)
     }
     bgImage = ebiten.NewImageFromImage(bgimage)
+
+    cardimage, _, err := image.Decode(bytes.NewReader(assets.Card_png))
+    if err != nil {
+        log.Fatal(err)
+    }
+    cardImage = ebiten.NewImageFromImage(cardimage)
 
     quitimage, _, err := image.Decode(bytes.NewReader(assets.QuitButton_png))
     if err != nil {
