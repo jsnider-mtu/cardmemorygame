@@ -98,10 +98,17 @@ func (g *Game) Restart() {
 }
 
 func (g *Game) Update() error {
-    w, h := ebiten.ScreenSizeInFullscreen()
+    w, h := ebiten.WindowSize()
+    if ebiten.IsFullscreen() {
+        w, h = ebiten.ScreenSizeInFullscreen()
+    }
     bw, bh := frontImage.Size()
     sw, sh := startImage.Size()
     qw, qh := quitImage.Size()
+    log.Print(qw / 8)
+    if inpututil.IsKeyJustPressed(ebiten.KeyF11) {
+        ebiten.SetFullscreen(!ebiten.IsFullscreen())
+    }
     if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
         xx, yy := ebiten.CursorPosition()
         if xx >= w - (w / 22) && xx <= w - (w / 22) + (qw / 8) && yy >= h / 38 && yy <= (h / 38) + (qh / 8) {
@@ -349,7 +356,10 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-    w, h := ebiten.ScreenSizeInFullscreen()
+    w, h := ebiten.WindowSize()
+    if ebiten.IsFullscreen() {
+        w, h = ebiten.ScreenSizeInFullscreen()
+    }
     dur, err := time.ParseDuration("1s")
     if err != nil {
         log.Fatal(err)
@@ -387,13 +397,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
             }
             initial = false
         }
-        if ebiten.IsKeyPressed(ebiten.Key2) {
+        if inpututil.IsKeyJustPressed(ebiten.Key2) {
             newn = 2
         }
-        if ebiten.IsKeyPressed(ebiten.Key4) {
+        if inpututil.IsKeyJustPressed(ebiten.Key4) {
             newn = 4
         }
-        if ebiten.IsKeyPressed(ebiten.Key6) {
+        if inpututil.IsKeyJustPressed(ebiten.Key6) {
             newn = 6
         }
     } else {
@@ -603,7 +613,9 @@ func main() {
     }
     startImage = ebiten.NewImageFromImage(startimage)
 
-    ebiten.SetFullscreen(true)
+    //ebiten.SetFullscreen(true)
+    ebiten.SetWindowSize(1024, 768)
+    ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
     ebiten.SetWindowTitle("Card Memory Game")
 
     game := &Game{n: 4}
