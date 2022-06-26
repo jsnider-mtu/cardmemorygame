@@ -126,7 +126,7 @@ func (g *Game) Update() error {
     if !start {
         if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
             x, y := ebiten.CursorPosition()
-            if x >= w - int(float64(w) / 4.5) && x <= w - int(float64(w) / 4.5) + (sw / 4) && y >= h - int(float64(h) / 3.835) && y <= h - int(float64(h) / 3.835) + (sh / 4) {
+            if x >= w - int(float64(w) / 8.714) && x <= w - int(float64(w) / 8.714) + (sw / 8) && y >= h - int(float64(h) / 3.835) && y <= h - int(float64(h) / 3.835) + (sh / 8) {
                 g.Restart()
                 start = true
             }
@@ -476,8 +476,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
         }
         if !start {
             sgm := ebiten.GeoM{}
-            sgm.Scale(0.25, 0.25)
-            sgm.Translate(float64(float64(w) - (float64(w) / 4.5)), float64(float64(h) - (float64(h) / 3.835)))
+            sgm.Scale(0.125, 0.125)
+            sgm.Translate(float64(w) - (float64(w) / 8.714), float64(h) - (float64(h) / 3.835))
             screen.DrawImage(
                 startImage, &ebiten.DrawImageOptions{
                     GeoM: sgm})
@@ -539,13 +539,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
         dgm := ebiten.GeoM{}
         dgm.Translate(float64(w) / 9.0, float64(h) / 1.375)
         cdi := ebiten.NewImage(wid2 + 24, hei2 + 24)
-        //cdi := ebiten.NewImage(174, 44)
         cdi.Fill(color.Black)
         screen.DrawImage(
             cdi, &ebiten.DrawImageOptions{
                 GeoM: dgm})
         dgm.Translate(float64(2), float64(2))
-        //di := ebiten.NewImage(170, 40)
         di := ebiten.NewImage(wid2 + 20, hei2 + 20)
         di.Fill(color.RGBA{241, 162, 47, 255})
         screen.DrawImage(
