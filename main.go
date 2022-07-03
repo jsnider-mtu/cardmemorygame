@@ -110,7 +110,7 @@ func (g *Game) Restart() {
     fronts = 0
     rand.Seed(time.Now().UnixNano())
     for a := 0; a < g.GetN(); a++ {
-        for b := 0; b <= g.GetN() / 2; b++ {
+        for b := 0; b < g.GetN() / 2; b++ {
             cards[[2]int{a, b}] = cardImage
             switch rand.Intn(3) {
             case 0:
@@ -449,7 +449,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
             g.N(newn)
             rand.Seed(time.Now().UnixNano())
             for a := 0; a < g.GetN(); a++ {
-                for b := 0; b <= g.GetN() / 2; b++ {
+                for b := 0; b < g.GetN() / 2; b++ {
                     cards[[2]int{a, b}] = cardImage
                     switch rand.Intn(3) {
                     case 0:
