@@ -11,7 +11,7 @@ import (
     "os"
     "time"
 
-    "cardmemorygame/assets"
+    "github.com/jsnider-mtu/cardmemorygame/assets"
 
     "golang.org/x/image/font"
     "golang.org/x/image/font/gofont/goregular"
