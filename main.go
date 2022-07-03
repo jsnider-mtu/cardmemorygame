@@ -21,9 +21,14 @@ import (
     "github.com/hajimehoshi/ebiten/v2/inpututil"
     "github.com/hajimehoshi/ebiten/v2/text"
     "github.com/hajimehoshi/ebiten/v2/examples/resources/images/platformer"
+
+    //_ "net/http/pprof"
 )
 
 var (
+    ci *ebiten.Image
+    cci *ebiten.Image
+    playpauseImage *ebiten.Image
     cardImage *ebiten.Image
     quitImage *ebiten.Image
     bgimage image.Image
@@ -37,15 +42,20 @@ var (
     flipped bool = false
     flippedcard [2]int
     flippedcards [][2]int
-    newn int = 2
+    newn int = 4
     clicked bool = false
     cardclicked [2]int
     pairs int = 0
     won bool = false
     sleep bool = false
     sleept int = 1
-    t0 time.Time
+    t [2]time.Time
     dura time.Duration
+    pdura time.Duration
+    pdurat time.Duration
+    mi, se int
+    pause bool = false
+    justpaused bool = false
 )
 
 var cardz = make(map[[2]int]*ebiten.Image)
@@ -73,7 +83,7 @@ func (g *Game) Restart() {
     won = false
     sleep = false
     sleept = 1
-    t0 = time.Time{}
+    t = [2]time.Time{}
     rand.Seed(time.Now().UnixNano())
     for a := 0; a < g.GetN(); a++ {
         for b := 0; b <= g.GetN() / 2; b++ {
@@ -134,6 +144,14 @@ func (g *Game) Update() error {
     } else {
         if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
             x, y := ebiten.CursorPosition()
+            if x >= 20 && x <= 70 && y >= 60 && y <= 110 {
+                pause = !pause
+                if pause {
+                    justpaused = true
+                } else {
+                    pdurat += pdura
+                }
+            }
             switch g.GetN() {
                 case 2:
                     switch {
@@ -407,21 +425,47 @@ func (g *Game) Draw(screen *ebiten.Image) {
         }
     } else {
         fo := truetype.NewFace(fon, &truetype.Options{Size: 20})
-        if !won {
-            if t0.IsZero() {
+        if !won && !pause && start {
+            if t[0].IsZero() {
                 dura, err = time.ParseDuration("0s")
                 if err != nil {
                     log.Fatal(err)
                 }
+                t[0] = time.Now()
             } else {
-                dura = time.Now().Sub(t0)
+                dura = time.Now().Sub(t[0]) - pdurat
             }
         }
-        mi := int(dura.Minutes()) % 60
-        se := int(dura.Seconds()) % 60
-        clearBG()
-        text.Draw(bgImage, fmt.Sprintf("%02d:%02d", mi, se), fo, 20, 40, color.Black)
+        if !pause {
+            mi = int(dura.Minutes()) % 60
+            se = int(dura.Seconds()) % 60
+        } else {
+            if justpaused {
+                pdura, err = time.ParseDuration("0s")
+                if err != nil {
+                    log.Fatal(err)
+                }
+                t[1] = time.Now()
+                justpaused = false
+            } else {
+                pdura = time.Now().Sub(t[1])
+            }
+        }
         screen.DrawImage(bgImage, &ebiten.DrawImageOptions{})
+        text.Draw(screen, fmt.Sprintf("%02d:%02d", mi, se), fo, 20, 40, color.Black)
+        pgm := ebiten.GeoM{}
+        pgm.Scale(0.5, 0.5)
+        pgm.Translate(float64(20), float64(60))
+        pausesi := [4]int{152, 50, 252, 150}
+        if pause {
+            pausesi[0] = 29
+            pausesi[2] = 129
+        }
+        screen.DrawImage(
+            playpauseImage.SubImage(
+                image.Rect(pausesi[0], pausesi[1], pausesi[2], pausesi[3])).(*ebiten.Image),
+                &ebiten.DrawImageOptions{
+                    GeoM: pgm})
         qgm := ebiten.GeoM{}
         qgm.Scale(0.125, 0.125)
         qgm.Translate(float64(w - (w / 18)), float64(h / 38))
@@ -442,14 +486,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
         for a := 0; a < g.GetN(); a++ {
             for b := 0; b < g.GetN(); b++ {
                 gm.Translate(-float64(2), -float64(2))
-                ci := ebiten.NewImage(bw + (32 / 3), bh + (32 / 3))
-                ci.Fill(color.Black)
                 screen.DrawImage(
                     ci, &ebiten.DrawImageOptions{
                         GeoM: gm})
                 gm.Translate(float64(2), float64(2))
-                cci := ebiten.NewImage(bw, bh)
-                cci.Fill(color.RGBA{241, 162, 47, 255})
                 screen.DrawImage(
                     cci, &ebiten.DrawImageOptions{
                         GeoM: gm})
@@ -484,8 +524,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
         }
     }
     if start {
-        if t0.IsZero() {
-            t0 = time.Now()
+        if len(t) == 0 {
+            t[0] = time.Now()
         }
         if clicked && !isAlreadyDone(cardclicked) {
             if !flipped {
@@ -566,14 +606,6 @@ func isAlreadyDone(c [2]int) bool {
     return false
 }
 
-func clearBG() {
-    bgimage, _, err := image.Decode(bytes.NewReader(platformer.Background_png))
-    if err != nil {
-        log.Fatal(err)
-    }
-    bgImage = ebiten.NewImageFromImage(bgimage)
-}
-
 func init() {
     bgimage, _, err := image.Decode(bytes.NewReader(platformer.Background_png))
     if err != nil {
@@ -610,21 +642,34 @@ func init() {
         log.Fatal(err)
     }
     frontImage = ebiten.NewImageFromImage(frontimage)
+    bw, bh := frontImage.Size()
 
     startimage, _, err := image.Decode(bytes.NewReader(assets.StartButton_png))
     if err != nil {
         log.Fatal(err)
     }
     startImage = ebiten.NewImageFromImage(startimage)
+
+    playpauseimage, _, err := image.Decode(bytes.NewReader(assets.PlayPause_png))
+    if err != nil {
+        log.Fatal(err)
+    }
+    playpauseImage = ebiten.NewImageFromImage(playpauseimage)
+
+    ci = ebiten.NewImage(bw + (32 / 3), bh + (32 / 3))
+    ci.Fill(color.Black)
+
+    cci = ebiten.NewImage(bw, bh)
+    cci.Fill(color.RGBA{241, 162, 47, 255})
 }
 
 func main() {
-    ebiten.SetWindowSize(1024, 768)
+    ebiten.SetWindowSize(1280, 720)
     ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
     ebiten.SetWindowSizeLimits(720, 561, -1, -1)
     ebiten.SetWindowTitle("Card Memory Game")
 
-    game := &Game{n: 4}
+    game := &Game{}
 
     if err := ebiten.RunGame(game); err != nil {
         log.Fatal(err)
