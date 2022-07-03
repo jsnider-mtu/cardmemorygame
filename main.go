@@ -13,6 +13,7 @@ import (
 
     "cardmemorygame/assets"
 
+    "golang.org/x/image/font"
     "golang.org/x/image/font/gofont/goregular"
 
     "github.com/golang/freetype/truetype"
@@ -22,6 +23,7 @@ import (
     "github.com/hajimehoshi/ebiten/v2/text"
     "github.com/hajimehoshi/ebiten/v2/examples/resources/images/platformer"
 
+    //"net/http"
     //_ "net/http/pprof"
 )
 
@@ -60,6 +62,9 @@ var (
     rights int = 0
     lefts int = 0
     fronts int = 0
+    fon *truetype.Font
+    fo2 font.Face
+    fo4 font.Face
 )
 
 var cardz = make(map[[2]int]*ebiten.Image)
@@ -436,10 +441,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
     if err != nil {
         log.Fatal(err)
     }
-    fon, err := truetype.Parse(goregular.TTF)
-    if err != nil {
-        log.Fatal(err)
-    }
 
     if initial {
         ebitenutil.DebugPrintAt(screen, "Number of rows and columns: " + fmt.Sprint(newn), w / 2, h / 2)
@@ -515,7 +516,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
             newn = 6
         }
     } else {
-        fo := truetype.NewFace(fon, &truetype.Options{Size: 20})
         if !won && !pause && start {
             if t[0].IsZero() {
                 dura, err = time.ParseDuration("0s")
@@ -543,7 +543,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
             }
         }
         screen.DrawImage(bgImage, &ebiten.DrawImageOptions{})
-        text.Draw(screen, fmt.Sprintf("%02d:%02d", mi, se), fo, 20, 40, color.Black)
+        text.Draw(screen, fmt.Sprintf("%02d:%02d", mi, se), fo2, 20, 40, color.Black)
         pgm := ebiten.GeoM{}
         pgm.Scale(0.5, 0.5)
         pgm.Translate(float64(20), float64(60))
@@ -645,8 +645,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
         }
     }
     if won {
-        fo := truetype.NewFace(fon, &truetype.Options{Size: 40})
-        r := text.BoundString(fo, "YOU WON")
+        r := text.BoundString(fo4, "YOU WON")
         wid := r.Max.X - r.Min.X
         hei := r.Max.Y - r.Min.Y
         wgm := ebiten.GeoM{}
@@ -662,8 +661,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
         screen.DrawImage(
             wi, &ebiten.DrawImageOptions{
                 GeoM: wgm})
-        text.Draw(screen, "YOU WON", fo, (w / 2) - (wid / 2), (h / 2) + (hei / 2), color.RGBA{22, 154, 26, 204})
-        fo2 := truetype.NewFace(fon, &truetype.Options{Size: 20})
+        text.Draw(screen, "YOU WON", fo4, (w / 2) - (wid / 2), (h / 2) + (hei / 2), color.RGBA{22, 154, 26, 204})
         r2 := text.BoundString(fo2, "Change Difficulty")
         wid2 := r2.Max.X - r2.Min.X
         hei2 := r2.Max.Y - r2.Min.Y
@@ -698,6 +696,13 @@ func isAlreadyDone(c [2]int) bool {
 }
 
 func init() {
+    fon, err = truetype.Parse(goregular.TTF)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fo2 = truetype.NewFace(fon, &truetype.Options{Size: 20})
+    fo4 = truetype.NewFace(fon, &truetype.Options{Size: 40})
+
     bgimage, _, err := image.Decode(bytes.NewReader(platformer.Background_png))
     if err != nil {
         log.Fatal(err)
@@ -761,6 +766,10 @@ func main() {
     ebiten.SetWindowTitle("Card Memory Game")
 
     game := &Game{}
+
+    //go func() {
+    //    log.Println(http.ListenAndServe("localhost:6060", nil))
+    //}()
 
     if err := ebiten.RunGame(game); err != nil {
         log.Fatal(err)
